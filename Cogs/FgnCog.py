@@ -1,12 +1,13 @@
 import asyncio
 
 from discord import Embed, Colour
-
-from GameFetchers import GameFetcher, RedditFetcher, CombinationFetcher, Game
 from discord.ext import commands, tasks
 from discord.channel import DMChannel
 from discord.ext.commands import Context as CmdCtx
+
+from GameFetchers.GameFetchers import GameFetcher, RedditFetcher, CombinationFetcher, Game
 from config import SUBREDDITS, FREE_ICON
+from helpers import log
 
 
 class FGNCog(commands.Cog):
@@ -20,6 +21,8 @@ class FGNCog(commands.Cog):
 
     @commands.command(name='free-games', aliases=['fg'])
     async def show_free_games(self, ctx):
+        if not isinstance(ctx.channel, DMChannel):
+            await ctx.message.delete()
         if self.data_source.update_required():
             msg = await ctx.send("Updating data.... (might take ~1 minute)")
         else:
@@ -32,6 +35,8 @@ class FGNCog(commands.Cog):
 
     @commands.command(name='free-today', aliases=['ft'])
     async def free_today(self, ctx):
+        if not isinstance(ctx.channel, DMChannel):
+            await ctx.message.delete()
         today = self.data_source.get_daily_cached()
         if not today:
             await ctx.send("No new free games today, try again later!")
@@ -41,34 +46,24 @@ class FGNCog(commands.Cog):
 
     @commands.command(name='ping')
     async def pong(self, ctx: CmdCtx):
-        embed = Embed(
-            colour=Colour.from_rgb(255, 1, 255),
-            description='This is the description :)',
-            title='Een gratis spelletje!',
-            url='http://google.com'
-        )
-        embed.set_author(name="Jefke", url="https://youtube.com",
-                         icon_url="https://www.suunto.com/contentassets/d74dd2dd8ae040b9b73fd9ae62f0c7f1/icon-success.png")
-        embed.set_footer(text="met voetjes uiteraard",
-                         icon_url="https://www.suunto.com/contentassets/d74dd2dd8ae040b9b73fd9ae62f0c7f1/icon-success.png")
-
-        embed.add_field(name="een veld", value="een hondje", inline=False)
-        embed.add_field(name="een ander veld", value="een poesje", inline=True)
-        embed.set_thumbnail(
-            url="https://geryaal.nl/wp-content/upload_folders/geryaal.nl/2018/07/wat-is-een-thumbnail.jpg")
-        embed.set_image(url="https://geryaal.nl/wp-content/upload_folders/geryaal.nl/2018/07/wat-is-een-thumbnail.jpg")
-
-        await ctx.send(embed=embed)
+        await ctx.send(f"Pong! {round(self.bot.latency, 1)}ms")
 
     @commands.command(name='setup')
     async def setup_daily(self, ctx: CmdCtx):
-        self.guild_daily_channels[ctx.guild] = ctx.channel
+        if isinstance(ctx.channel, DMChannel):
+            await ctx.send('❌ Can only be used in server channels')
+            return
+        await ctx.message.delete()
+        self.guild_daily_channels[ctx.guild.id] = ctx.channel
         if not self.daily_update.is_running():
             self.daily_update.start()
+        await ctx.send('✅ New free games will be posted here!')
 
     @commands.command(name='toggle-loop', aliases=['tl'])
     @commands.is_owner()
     async def toggle_daily_update(self, ctx):
+        if not isinstance(ctx.channel, DMChannel):
+            await ctx.message.delete()
         if isinstance(ctx.channel, DMChannel):
             if self.daily_update.is_running():
                 self.daily_update.cancel()
@@ -80,7 +75,9 @@ class FGNCog(commands.Cog):
     @commands.command(name='force-update', aliases=['fu'])
     @commands.is_owner()
     async def force_update(self, ctx):
-        await self.data_source.daily_update()
+        if not isinstance(ctx.channel, DMChannel):
+            await ctx.message.delete()
+        await self.data_source.get_free_games(True)
         await ctx.send("Updated cache")
 
     @commands.command(name='broadcast', aliases=['bc', 'broodkast'])
@@ -112,9 +109,12 @@ class FGNCog(commands.Cog):
         loop = asyncio.get_event_loop()
         loop.run_until_complete(RedditFetcher.clean())
 
-    @tasks.loop(hours=24)
+    @tasks.loop(minutes=2)
     async def daily_update(self):
+        log("Daily update started!")
         games = await self.data_source.daily_update()
         for channel in self.guild_daily_channels.values():
             for game in games:
                 await channel.send(embed=self.create_embed(game))
+            if not games:
+                await channel.send('No new games today')

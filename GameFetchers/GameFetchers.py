@@ -6,30 +6,8 @@ import asyncpraw
 import os
 from config import *
 from WebScrapers import *
-
-
-# TODO: add game release date?
-
-class Game:
-    def __init__(self, title, store_url, game_url, fetch_date, image, store_icon, store, description,
-                 author):
-
-        description = description.replace('\n', '')
-        if len(description) > DESCRIPTION_SIZE:
-            description = description[0:DESCRIPTION_SIZE] + '...'
-
-        self.store_url = store_url
-        self.image = image
-        self.store_icon = store_icon
-        self.store = store
-        self.description = description
-        self.title = title
-        self.game_url = game_url
-        self.fetch_date = fetch_date
-        self.author = author
-
-    def __repr__(self):
-        return f"Game({self.title}, {self.game_url})"
+from helpers import log
+from .Game import Game
 
 
 class GameFetcher:
@@ -69,7 +47,9 @@ class GameFetcher:
 
         def filter_outdated(g: Game):
             fetched_time = g.fetch_date
-            return (datetime.now() - fetched_time).hours <= 24
+            seconds = (datetime.now() - fetched_time).total_seconds()
+            minutes = seconds / 60
+            return minutes / 60 <= 24
 
         self.daily_cache = list(filter(filter_outdated, self.daily_cache))
         self.daily_cache = list(filter(filter_not_free, self.daily_cache))
@@ -80,8 +60,7 @@ class GameFetcher:
             if title not in cached_titles:
                 cached_titles.append(title)
                 self.daily_cache.append(game)
-        
-        print(f"[{datetime.now().strftime('%b %d %Y %H:%M:%S')}]: Updated daily cache!")
+        log("Updated daily cache!")
         return self.daily_cache
 
     def daily_update_required(self):
@@ -94,7 +73,8 @@ class GameFetcher:
     def update_required(self):
         if self.last_update is None:
             return True
-        return (datetime.now() - self.last_update).total_seconds() / 60 >= REFRESH_TIME
+        elapsed_minutes = (datetime.now() - self.last_update).total_seconds() / 60
+        return elapsed_minutes >= REFRESH_TIME
 
 
 class RedditFetcher(GameFetcher):
@@ -136,7 +116,7 @@ class RedditFetcher(GameFetcher):
         if self.update_required() or force:
             free = []
             s_reddit = await self.subreddit
-            async for s in s_reddit.hot(limit=LIMIT):
+            async for s in s_reddit.hot(limit=FETCH_LIMIT):
                 url = s.url
                 if s.stickied or not self.allowed_source(url):
                     continue
@@ -157,7 +137,7 @@ class RedditFetcher(GameFetcher):
                     # TODO: get post date of reddit post, for daily update, posts cannot be older than 1 day
             self.last_update = datetime.now()
             self.cache = free
-            print(f"[{datetime.now().strftime('%b %d %Y %H:%M:%S')}]: Updated {self} cache!")
+            log(f"Updated {self} cache!")
         return self.cache
 
 
@@ -170,12 +150,14 @@ class CombinationFetcher(GameFetcher):
     async def get_free_games(self, force=False):
         all_games = dict()
         for fetcher in self.fetchers:
-            fetched_games = await fetcher.get_free_games()
+            fetched_games = await fetcher.get_free_games(force)
             for game in fetched_games:
                 title = game.title
                 if title not in all_games:
                     all_games[title] = game
         self.cache = all_games.values()
+        if self.update_required() or force:
+            self.last_update = datetime.now()
         return self.cache
 
     @staticmethod
