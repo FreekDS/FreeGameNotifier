@@ -107,7 +107,9 @@ class FGNCog(commands.Cog):
     @staticmethod
     def clean():
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(RedditFetcher.clean())
+        if loop.is_running():
+            loop.close()
+        asyncio.run(RedditFetcher.clean())
 
     @tasks.loop(hours=24)
     async def daily_update(self):
