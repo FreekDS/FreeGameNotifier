@@ -109,7 +109,7 @@ class FGNCog(commands.Cog):
         loop = asyncio.get_event_loop()
         loop.run_until_complete(RedditFetcher.clean())
 
-    @tasks.loop(minutes=2)
+    @tasks.loop(hours=24)
     async def daily_update(self):
         log("Daily update started!")
         games = await self.data_source.daily_update()
