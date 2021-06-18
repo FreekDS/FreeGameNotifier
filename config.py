@@ -19,6 +19,6 @@ STEAM_ICON = 'https://upload.wikimedia.org/wikipedia/commons/f/f5/SteamLogo.png'
 SQUARE_ENIX_ICON = 'https://cdn-prod.scalefast.com/public/assets/themes/squareenix-store-v3/images/favicons/favicon' \
                    '-16x16.png'
 MICROSOFT_ICON = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Microsoft_Store.svg/1200px' \
-                 '-Microsoft_Store.svg.png '
+                 '-Microsoft_Store.svg.png'
 FREE_ICON = "https://cdn3.iconfinder.com/data/icons/basicolor-shopping-ecommerce/24/222_free_gift-512.png"
 
