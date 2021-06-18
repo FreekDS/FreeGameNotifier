@@ -1,4 +1,5 @@
 import asyncio
+import globals
 
 from discord import Embed, Colour
 from discord.ext import commands, tasks
@@ -6,7 +7,6 @@ from discord.channel import DMChannel
 from discord.ext.commands import Context as CmdCtx
 
 from GameFetchers.GameFetchers import GameFetcher, RedditFetcher, CombinationFetcher, Game
-from config import SUBREDDITS, FREE_ICON
 from helpers import log
 
 
@@ -15,7 +15,7 @@ class FGNCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.data_source: GameFetcher = CombinationFetcher(
-            *[RedditFetcher(sr) for sr in SUBREDDITS]
+            *[RedditFetcher(sr) for sr in globals.CONF_GENERAL.get('reddit').get('subreddits')]
         )
         self.guild_daily_channels = {}
 
@@ -97,7 +97,7 @@ class FGNCog(commands.Cog):
         embed.set_author(name=game.store, icon_url=game.store_icon, url=game.store_url)
         embed.add_field(name='Author', value=game.author)
         embed.set_image(url=game.image)
-        embed.set_footer(icon_url=FREE_ICON, text="It's free real estate!!")
+        embed.set_footer(icon_url=globals.CONF_GENERAL.get('icons').get('free'), text="It's free real estate!!")
         return embed
 
     def cog_unload(self):

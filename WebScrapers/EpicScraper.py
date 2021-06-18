@@ -1,4 +1,4 @@
-from config import EPIC_ICON
+import globals
 from .ScraperBase import SiteScraper
 
 
@@ -24,7 +24,7 @@ class EpicGames(SiteScraper):
 
     @staticmethod
     def get_store_icon_url():
-        return EPIC_ICON
+        return globals.CONF_GENERAL.get('icons').get('epic')
 
     def get_game_image(self):
         picture_div = self.html.find('div', attrs={'data-testid': 'picture', 'data-component': 'Picture'})
