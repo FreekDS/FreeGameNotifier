@@ -1,6 +1,8 @@
 import globals
+import discord
 
 from discord.channel import DMChannel
+from discord.embeds import Embed
 from discord.ext import commands
 from Helpers import NestedDict
 
@@ -96,3 +98,28 @@ class ConfManagerCog(commands.Cog):
 
         globals.CONF_GENERAL.update_content(original.to_dict())
         await ctx.invoke(self.bot.get_command('show-config'))
+
+    @commands.command(name='admin-help', aliases=['ahelp'])
+    @commands.is_owner()
+    async def admin_help(self, ctx):
+        e = Embed(title="Admin command usage", description="This is mainly for configuration management",
+                  color=discord.Color.red())
+        e.add_field(name='edit-config (ec)',
+                    value=f"A couple of use cases exist for edit-config\n\n"
+                          f"**edit existing value**: ec key1 [key2, key3...] new_value\n\t"
+                          f"this does only work for values, not for lists or objects\n"
+                          f"**delete key**: ec key1 [key2, key3...] /del\n"
+                          f"*add new key*: ec key1 [key2, key3...] /new\n"
+                          f"**remove item from list**: ec key1 [key2, key3...] /r=index_type\n\t"
+                          f"index_type can be 'all', a single index or a list of indices given in Python list format (no spaces are allowed)\n"
+                          f"**append value to list**: ec key1 [key2, key3...] /a=value\n\t"
+                          f"the value can be a list, string, boolean, integer or a float\n\n"
+                          f"Note: to use spaces, use the space placeholder. See the config for the placeholder\n",
+                    inline=False)
+        e.add_field(name='force-save (fs)',
+                    value=f"Force save the configuration file to DropBox", inline=False)
+        e.add_field(name='force-reload (fr)',
+                    value='Force reload the configuration file from DropBox', inline=False)
+        e.add_field(name='show-config (sc)',
+                    value='Show the configuration file', inline=False)
+        await ctx.send(embed=e)
