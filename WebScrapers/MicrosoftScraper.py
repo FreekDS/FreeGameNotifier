@@ -1,4 +1,4 @@
-from config import MICROSOFT_ICON
+import globals
 from .ScraperBase import SiteScraper
 
 
@@ -21,7 +21,7 @@ class MicrosoftStore(SiteScraper):
 
     @staticmethod
     def get_store_icon_url():
-        return MICROSOFT_ICON
+        return globals.CONF_GENERAL.get('icons').get('microsoft')
 
     def get_game_image(self):
         picture = self.html.find('picture', id='dynamicImage_image_picture')

@@ -4,9 +4,9 @@ from typing import List
 
 import asyncpraw
 import os
-from config import *
+import globals
 from WebScrapers import *
-from helpers import log
+from Helpers import log
 from .Game import Game
 
 
@@ -28,7 +28,7 @@ class GameFetcher:
 
     @staticmethod
     def allowed_source(full_url: str) -> bool:
-        for allowed in ALLOWED_SOURCES:
+        for allowed in globals.CONF_GENERAL.get('data').get('sources'):
             if allowed in full_url:
                 return True
         return False
@@ -74,7 +74,7 @@ class GameFetcher:
         if self.last_update is None:
             return True
         elapsed_minutes = (datetime.now() - self.last_update).total_seconds() / 60
-        return elapsed_minutes >= REFRESH_TIME
+        return elapsed_minutes >= globals.CONF_GENERAL.get('data').get('refresh_rate')
 
 
 class RedditFetcher(GameFetcher):
@@ -86,7 +86,7 @@ class RedditFetcher(GameFetcher):
             RedditFetcher.REDDIT_INSTANCE = asyncpraw.Reddit(
                 client_id=os.getenv('REDDIT_ID'),
                 client_secret=os.getenv('REDDIT_SECRET'),
-                user_agent=REDDIT_AGENT
+                user_agent=globals.CONF_GENERAL.get('reddit').get('agent')
             )
         return RedditFetcher.REDDIT_INSTANCE
 
@@ -116,7 +116,7 @@ class RedditFetcher(GameFetcher):
         if self.update_required() or force:
             free = []
             s_reddit = await self.subreddit
-            async for s in s_reddit.hot(limit=FETCH_LIMIT):
+            async for s in s_reddit.hot(limit=globals.CONF_GENERAL.get('reddit').get('fetch_limit')):
                 url = s.url
                 if s.stickied or not self.allowed_source(url):
                     continue

@@ -1,4 +1,4 @@
-from config import STEAM_ICON
+import globals
 from .ScraperBase import SiteScraper
 
 
@@ -29,7 +29,7 @@ class Steam(SiteScraper):
 
     @staticmethod
     def get_store_icon_url():
-        return STEAM_ICON
+        return globals.CONF_GENERAL.get('icons').get('steam')
 
     def get_title(self) -> str:
         title = self.html.find('div', id='appHubAppName')

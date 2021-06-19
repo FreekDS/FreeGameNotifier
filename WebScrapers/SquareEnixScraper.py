@@ -1,4 +1,4 @@
-from config import SQUARE_ENIX_ICON
+import globals
 from .ScraperBase import SiteScraper
 
 
@@ -17,7 +17,7 @@ class SquareEnix(SiteScraper):
 
     @staticmethod
     def get_store_icon_url():
-        return SQUARE_ENIX_ICON
+        return globals.CONF_GENERAL.get('icons').get('square_enix')
 
     def get_game_image(self):
         figure = self.html.find('figure', class_='product-boxshot-container')
