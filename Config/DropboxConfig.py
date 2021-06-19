@@ -9,9 +9,9 @@ from Helpers import log
 
 def init_required(func):
     @wraps(func)
-    def wrapper(*args):
+    def wrapper(*args, **kwargs):
         if args[0].initialized:
-            return func(*args)
+            return func(*args, **kwargs)
         else:
             log("Config manager is not initialized, initialize first by calling read_file()!")
 
@@ -64,9 +64,12 @@ class Config:
             try:
                 res = Config.DBX.files_upload(content, f"/{self.conf_path}", dropbox.files.WriteMode.overwrite)
                 self._changed = False if not force else self._changed
-                print(res)
+                if force:
+                    log(f"Saved configuration file forcefully!")
+                else:
+                    log("Saved configuration file!")
             except dropbox.exceptions.ApiError as e:
-                log(f"Error {e}")
+                log(f"Error saving configuration file {e}")
 
     @init_required
     def get(self, key):

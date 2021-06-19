@@ -6,7 +6,7 @@ import globals
 
 bot = commands.Bot(command_prefix='=')
 
-
+# TODO: custom help command
 # TODO: command to update prefix per guild (depends on persistent storage though)
 # TODO: keep reddit post date in Game object for daily update
 # TODO: add game release date?
