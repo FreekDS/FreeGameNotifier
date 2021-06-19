@@ -8,7 +8,7 @@ def init(access_token):
     global CONF_GENERAL
     global CONF_GUILDS
 
-    CONF_GENERAL = Config(access_token=access_token, conf_path='config.json')
+    CONF_GENERAL = Config(access_token=access_token, conf_path='config-dev.json')
     CONF_GENERAL.read_file()
 
     # CONF_GUILDS = Config(conf_path='guilds.json')

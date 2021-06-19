@@ -6,7 +6,7 @@ import asyncpraw
 import os
 import globals
 from WebScrapers import *
-from helpers import log
+from Helpers import log
 from .Game import Game
 
 

@@ -4,7 +4,7 @@ import dropbox
 import dropbox.exceptions
 import dropbox.files
 import json
-from helpers import log
+from Helpers import log
 
 
 def init_required(func):
@@ -29,15 +29,24 @@ class Config:
                 Config.DBX = dropbox.Dropbox(access_token)
             except dropbox.exceptions.AuthError as e:
                 raise e
-        self.content = dict()
+        self._content = dict()
         self.conf_path = conf_path
         self.initialized = False
         self._changed = False
 
+    @init_required
+    def get_content(self):
+        return self._content
+
+    @init_required
+    def update_content(self, content):
+        self._content = content
+        self._changed = True
+
     def read_file(self):
         try:
             md, resp = Config.DBX.files_download(f'/{self.conf_path}')
-            self.content = json.loads(resp.content)
+            self._content = json.loads(resp.content)
             self.initialized = True
             log(f"/{self.conf_path} loaded from DropBox!")
         except dropbox.exceptions.ApiError as e:
@@ -49,32 +58,35 @@ class Config:
         return self._changed
 
     @init_required
-    def save(self):
-        if self.has_changed():
-            content = json.dumps(self.content, indent=4).encode()
+    def save(self, force=False):
+        if self.has_changed() or force:
+            content = json.dumps(self._content, indent=4).encode()
             try:
                 res = Config.DBX.files_upload(content, f"/{self.conf_path}", dropbox.files.WriteMode.overwrite)
-                self._changed = False
+                self._changed = False if not force else self._changed
                 print(res)
             except dropbox.exceptions.ApiError as e:
                 log(f"Error {e}")
 
     @init_required
     def get(self, key):
-        return self.content.get(key)
+        return self._content.get(key)
 
     @init_required
     def keys(self):
-        return self.content.keys()
+        return self._content.keys()
 
     @init_required
     def set(self, key, value):
-        if key not in self.content:
+        if key not in self._content:
             log("No such key in configuration...")
             return False
-        self.content[key] = value
+        self._content[key] = value
         self._changed = True
         return True
 
+    def as_json(self, indent=4):
+        return json.dumps(self._content, indent=indent)
+
     def print_json(self, indent=4):
-        print(json.dumps(self.content, indent=indent))
+        print(self.as_json(indent))

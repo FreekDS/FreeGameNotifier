@@ -1,7 +1,7 @@
 import os
 from discord.ext import commands
 from dotenv import load_dotenv
-from helpers import log
+from Helpers import log
 import globals
 
 bot = commands.Bot(command_prefix='=')
@@ -18,7 +18,7 @@ async def on_ready():
 
 
 if __name__ == '__main__':
-    from Cogs import FGNCog
+    from Cogs import FGNCog, ConfManagerCog
 
     load_dotenv()
 
@@ -28,6 +28,7 @@ if __name__ == '__main__':
     globals.init(DROPBOX_TOKEN)
 
     bot.add_cog(FGNCog(bot))
+    bot.add_cog(ConfManagerCog(bot))
     try:
         bot.run(DISCORD_TOKEN)
     except Exception as e:
