@@ -25,7 +25,9 @@ if __name__ == '__main__':
     DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
     DROPBOX_TOKEN = os.getenv('DROPBOX_ACCESS_TOKEN')
 
-    globals.init(DROPBOX_TOKEN)
+    is_development = os.getenv('DEV', None) is not None
+
+    globals.init(DROPBOX_TOKEN, is_development)
 
     bot.add_cog(FGNCog(bot))
     bot.add_cog(ConfManagerCog(bot))
