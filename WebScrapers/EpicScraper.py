@@ -27,11 +27,15 @@ class EpicGames(SiteScraper):
         return globals.CONF_GENERAL.get('icons').get('epic')
 
     def get_game_image(self):
-        picture_div = self.html.find('div', attrs={'data-testid': 'picture', 'data-component': 'Picture'})
-        if picture_div is None:
+        picture_divs = self.html.find_all('div', attrs={'data-testid': 'picture', 'data-component': 'Picture'})
+        if picture_divs is None:
             return None
-        img = picture_div.find('img')
-        return img['src'] if img else None
+        for picture_div in picture_divs:
+            img = picture_div.find('img')
+            src = img['src'] if img else None
+            if src and src.startswith('http'):
+                return src
+        return None
 
     def get_description(self):
         div = self.html.find('div', attrs={'data-component': 'LineClamp'})
