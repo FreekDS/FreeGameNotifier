@@ -46,7 +46,7 @@ class FGNCog(commands.Cog):
 
     @commands.command(name='ping')
     async def pong(self, ctx: CmdCtx):
-        await ctx.send(f"Pong! {round(self.bot.latency, 1)}ms")
+        await ctx.send(f"Pong! {round(self.bot.latency * 1000, 4)}ms")
 
     @commands.command(name='setup')
     async def setup_daily(self, ctx: CmdCtx):
@@ -78,7 +78,7 @@ class FGNCog(commands.Cog):
         if not isinstance(ctx.channel, DMChannel):
             await ctx.message.delete()
         await self.data_source.get_free_games(True)
-        await ctx.send("Updated cache")
+        await ctx.send("✅ Updated cache")
 
     @commands.command(name='broadcast', aliases=['bc', 'broodkast'])
     @commands.is_owner()
