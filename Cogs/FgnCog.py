@@ -19,7 +19,7 @@ class FGNCog(commands.Cog):
         )
         self.guild_daily_channels = {}
 
-    @commands.command(name='free-games', aliases=['fg'])
+    @commands.command(name='free-games', aliases=['fg'], help=globals.get_help('free-games'))
     async def show_free_games(self, ctx):
         if not isinstance(ctx.channel, DMChannel):
             await ctx.message.delete()
@@ -33,7 +33,7 @@ class FGNCog(commands.Cog):
         for game in games:
             await ctx.send(embed=self.create_embed(game))
 
-    @commands.command(name='free-today', aliases=['ft'])
+    @commands.command(name='free-today', aliases=['ft'], help=globals.get_help('free-today'))
     async def free_today(self, ctx):
         if not isinstance(ctx.channel, DMChannel):
             await ctx.message.delete()
@@ -44,11 +44,11 @@ class FGNCog(commands.Cog):
         for g in self.data_source.get_daily_cached():
             await ctx.send(embed=self.create_embed(g))
 
-    @commands.command(name='ping')
+    @commands.command(name='ping', help=globals.get_help('ping'))
     async def pong(self, ctx: CmdCtx):
-        await ctx.send(f"Pong! {round(self.bot.latency * 1000, 4)}ms")
+        await ctx.send(f"🏓 Pong! {round(self.bot.latency * 1000, 4)}ms")
 
-    @commands.command(name='setup')
+    @commands.command(name='setup', help=globals.get_help('setup'))
     async def setup_daily(self, ctx: CmdCtx):
         if isinstance(ctx.channel, DMChannel):
             await ctx.send('❌ Can only be used in server channels')
@@ -59,7 +59,7 @@ class FGNCog(commands.Cog):
             self.daily_update.start()
         await ctx.send('✅ New free games will be posted here!')
 
-    @commands.command(name='toggle-loop', aliases=['tl'])
+    @commands.command(name='toggle-loop', aliases=['tl'], help=globals.get_help('toggle-loop'))
     @commands.is_owner()
     async def toggle_daily_update(self, ctx):
         if not isinstance(ctx.channel, DMChannel):
@@ -72,7 +72,7 @@ class FGNCog(commands.Cog):
                 self.daily_update.start()
                 await ctx.send("Started loop!")
 
-    @commands.command(name='force-update', aliases=['fu'])
+    @commands.command(name='force-update', aliases=['fu'], help=globals.get_help('force-update'))
     @commands.is_owner()
     async def force_update(self, ctx):
         if not isinstance(ctx.channel, DMChannel):
@@ -80,7 +80,7 @@ class FGNCog(commands.Cog):
         await self.data_source.get_free_games(True)
         await ctx.send("✅ Updated cache")
 
-    @commands.command(name='broadcast', aliases=['bc', 'broodkast'])
+    @commands.command(name='broadcast', aliases=['bc', 'broodkast'], help=globals.get_help('broadcast'))
     @commands.is_owner()
     async def broadcast(self, _, message):
         for channel in self.guild_daily_channels.values():

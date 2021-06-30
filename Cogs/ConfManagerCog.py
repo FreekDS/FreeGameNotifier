@@ -154,7 +154,7 @@ class ConfManagerCog(commands.Cog):
                 if prefix is None:
                     prefix = globals.CONF_GUILDS.get('default')
                 await message.channel.send(f"✅ prefix for {guild_name} is '{prefix}'")
-            if not message.content.lower().startswith('='):
+            elif not message.content.lower().startswith('='):
                 await message.channel.send(f"Recover your prefix by sending 'prefix *guild_name*'")
 
     @commands.command(name='guild-id', aliases=['gid'])
@@ -166,9 +166,11 @@ class ConfManagerCog(commands.Cog):
         else:
             await ctx.send(f"❌ No such guild {name}")
 
-    @commands.command(name='admin-help', aliases=['ahelp'])
+    @commands.command(name='admin-help', aliases=['ahelp'], help=globals.get_help('admin-help'))
     @commands.is_owner()
     async def admin_help(self, ctx):
+        if not isinstance(ctx.channel, DMChannel):
+            return
         e = Embed(title="Admin command usage", description="This is mainly for configuration management",
                   color=discord.Color.red())
         e.add_field(name='edit-config (ec)',
