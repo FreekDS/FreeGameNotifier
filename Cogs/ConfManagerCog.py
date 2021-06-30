@@ -1,11 +1,10 @@
-from discord.ext.commands import has_permissions
-
-import globals
 import discord
-
 from discord.channel import DMChannel
 from discord.embeds import Embed
 from discord.ext import commands
+from discord.ext.commands import has_permissions
+
+import globals
 from Helpers import NestedDict
 
 
@@ -154,7 +153,7 @@ class ConfManagerCog(commands.Cog):
                 if prefix is None:
                     prefix = globals.CONF_GUILDS.get('default')
                 await message.channel.send(f"✅ prefix for {guild_name} is '{prefix}'")
-            if not message.content.lower().startswith('='):
+            elif not message.content.lower().startswith('='):
                 await message.channel.send(f"Recover your prefix by sending 'prefix *guild_name*'")
 
     @commands.command(name='guild-id', aliases=['gid'])
@@ -166,9 +165,11 @@ class ConfManagerCog(commands.Cog):
         else:
             await ctx.send(f"❌ No such guild {name}")
 
-    @commands.command(name='admin-help', aliases=['ahelp'])
+    @commands.command(name='admin-help', aliases=['ahelp'], help=globals.get_help('admin-help'))
     @commands.is_owner()
     async def admin_help(self, ctx):
+        if not isinstance(ctx.channel, DMChannel):
+            return
         e = Embed(title="Admin command usage", description="This is mainly for configuration management",
                   color=discord.Color.red())
         e.add_field(name='edit-config (ec)',
@@ -178,7 +179,8 @@ class ConfManagerCog(commands.Cog):
                           f"**delete key**: ec key1 [key2, key3...] /del\n"
                           f"*add new key*: ec key1 [key2, key3...] /new\n"
                           f"**remove item from list**: ec key1 [key2, key3...] /r=index_type\n\t"
-                          f"index_type can be 'all', a single index or a list of indices given in Python list format (no spaces are allowed)\n"
+                          f"index_type can be 'all', a single index or a list of indices given in Python list format "
+                          f"(no spaces are allowed)\n "
                           f"**append value to list**: ec key1 [key2, key3...] /a=value\n\t"
                           f"the value can be a list, string, boolean, integer or a float\n\n"
                           f"Note: to use spaces, use the space placeholder. See the config for the placeholder\n",

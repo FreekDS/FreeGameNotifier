@@ -1,7 +1,8 @@
 import collections.abc
 import re
-import globals
 from typing import List, Union
+
+import globals
 
 
 class NestedDict(dict):

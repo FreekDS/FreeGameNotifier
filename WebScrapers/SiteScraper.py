@@ -1,8 +1,8 @@
-from .ScraperBase import SiteScraper
-from .SteamScraper import Steam
 from .EpicScraper import EpicGames
-from .SquareEnixScraper import SquareEnix
 from .MicrosoftScraper import MicrosoftStore
+from .ScraperBase import SiteScraper
+from .SquareEnixScraper import SquareEnix
+from .SteamScraper import Steam
 
 __all__ = ['still_free', 'get_html', 'html_get']
 
@@ -35,9 +35,8 @@ def html_get(html, what):
 if __name__ == '__main__':
     # Todo write proper tests maybe
 
-    # url_ms = "https://web.archive.org/web/20210610134429if_/https://www.microsoft.com/en-us/p/Tell-Me-Why-Chapters-1" \
-    #          "-3/9NF83PRZK6K3?wa=wsignin1.0 "
-    # print(still_free(url_ms))
+    # url_ms = "https://web.archive.org/web/20210610134429if_/https://www.microsoft.com/en-us/p/Tell-Me-Why-Chapters
+    # -1" \ "-3/9NF83PRZK6K3?wa=wsignin1.0 " print(still_free(url_ms))
     #
     # url_steam = "https://web.archive.org/web/20210610135133/https://store.steampowered.com/sub/588737/"
     # print(still_free(url_steam))

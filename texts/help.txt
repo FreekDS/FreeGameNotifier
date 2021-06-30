@@ -1,0 +1,13 @@
+
+# Normal commands
+free-games=Shows all the games that are currently free.
+free-today=Shows the games that are made free today. This shows only the games that are made free recently.
+ping=Show latency of the bot 🏓
+setup=Set up the channel where the daily game updates should be posted.
+help=Shows this message
+
+# Admin commands
+toggle-loop=Toggle global daily update loop (admin only)
+force-update=Update the cache of the games forcefully (admin only)
+broadcast=Broadcast a message to all setup channels (admin only)
+admin-help=Shows the admin commands and their description (DM only, admin only)
