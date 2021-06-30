@@ -18,7 +18,6 @@ def determine_prefix(client, message):
 bot = commands.Bot(command_prefix=determine_prefix)
 
 
-# TODO: custom help command
 # TODO: keep reddit post date in Game object for daily update
 # TODO: add game release date?
 
@@ -44,10 +43,12 @@ if __name__ == '__main__':
     is_development = os.getenv('DEV', None) is not None
     globals.init(DROPBOX_TOKEN, is_development)
 
-    from Cogs import FGNCog, ConfManagerCog
+    from Cogs import FGNCog, ConfManagerCog, HelpCog
 
+    bot.remove_command('help')  # Remove default help command
     bot.add_cog(FGNCog(bot))
     bot.add_cog(ConfManagerCog(bot))
+    bot.add_cog(HelpCog(bot))
     try:
         bot.run(DISCORD_TOKEN)
     except Exception as e:
