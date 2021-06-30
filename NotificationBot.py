@@ -1,11 +1,13 @@
 import os
+
 from discord.ext import commands
 from dotenv import load_dotenv
-from Helpers import log
+
 import globals
+from Helpers import log
 
 
-def determine_prefix(client, message):
+def determine_prefix(_, message):
     try:
         g_id = str(message.guild.id)
         prefix = globals.CONF_GUILDS.get(g_id)

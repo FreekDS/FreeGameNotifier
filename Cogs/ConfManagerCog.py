@@ -1,11 +1,10 @@
-from discord.ext.commands import has_permissions
-
-import globals
 import discord
-
 from discord.channel import DMChannel
 from discord.embeds import Embed
 from discord.ext import commands
+from discord.ext.commands import has_permissions
+
+import globals
 from Helpers import NestedDict
 
 
@@ -180,7 +179,8 @@ class ConfManagerCog(commands.Cog):
                           f"**delete key**: ec key1 [key2, key3...] /del\n"
                           f"*add new key*: ec key1 [key2, key3...] /new\n"
                           f"**remove item from list**: ec key1 [key2, key3...] /r=index_type\n\t"
-                          f"index_type can be 'all', a single index or a list of indices given in Python list format (no spaces are allowed)\n"
+                          f"index_type can be 'all', a single index or a list of indices given in Python list format "
+                          f"(no spaces are allowed)\n "
                           f"**append value to list**: ec key1 [key2, key3...] /a=value\n\t"
                           f"the value can be a list, string, boolean, integer or a float\n\n"
                           f"Note: to use spaces, use the space placeholder. See the config for the placeholder\n",

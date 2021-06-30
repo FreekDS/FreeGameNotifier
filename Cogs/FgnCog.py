@@ -1,11 +1,11 @@
 import asyncio
-import globals
 
 from discord import Embed, Colour
-from discord.ext import commands, tasks
 from discord.channel import DMChannel
+from discord.ext import commands, tasks
 from discord.ext.commands import Context as CmdCtx
 
+import globals
 from GameFetchers.GameFetchers import GameFetcher, RedditFetcher, CombinationFetcher, Game
 from Helpers import log
 
@@ -96,7 +96,10 @@ class FGNCog(commands.Cog):
         )
         embed.set_author(name=game.store, icon_url=game.store_icon, url=game.store_url)
         embed.add_field(name='Author', value=game.author)
-        embed.set_image(url=game.image)
+        if game.image.startswith('http') or game.image.startswith('https'):
+            embed.set_image(url=game.image)
+        else:
+            print("hmm?")
         embed.set_footer(icon_url=globals.CONF_GENERAL.get('icons').get('free'), text="It's free real estate!!")
         return embed
 

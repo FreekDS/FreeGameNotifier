@@ -1,9 +1,10 @@
+import json
 from functools import wraps
 
 import dropbox
 import dropbox.exceptions
 import dropbox.files
-import json
+
 from Helpers import log
 
 
@@ -62,7 +63,7 @@ class Config:
         if self.has_changed() or force:
             content = json.dumps(self._content, indent=4).encode()
             try:
-                res = Config.DBX.files_upload(content, f"/{self.conf_path}", dropbox.files.WriteMode.overwrite)
+                _ = Config.DBX.files_upload(content, f"/{self.conf_path}", dropbox.files.WriteMode.overwrite)
                 self._changed = False if not force else self._changed
                 if force:
                     log(f"Saved configuration file forcefully!")

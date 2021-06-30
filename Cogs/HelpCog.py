@@ -1,9 +1,7 @@
-import globals
-
 from discord import Embed, Colour
-from discord.ext import commands, tasks
-from discord.channel import DMChannel
-from discord.ext.commands import Context as CmdCtx
+from discord.ext import commands
+
+import globals
 from NotificationBot import determine_prefix
 
 
