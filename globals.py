@@ -13,8 +13,8 @@ def init(access_token, is_development):
     CONF_GENERAL = Config(access_token=access_token, conf_path=f'config{version}.json')
     CONF_GENERAL.read_file()
 
-    # CONF_GUILDS = Config(conf_path='guilds.json')
-    # CONF_GUILDS.read_file()
+    CONF_GUILDS = Config(conf_path=f'guilds{version}.json')
+    CONF_GUILDS.read_file()
 
 
 def save_all():

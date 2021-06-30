@@ -4,10 +4,20 @@ from dotenv import load_dotenv
 from Helpers import log
 import globals
 
-bot = commands.Bot(command_prefix='=')
+
+def determine_prefix(client, message):
+    try:
+        g_id = str(message.guild.id)
+        prefix = globals.CONF_GUILDS.get(g_id)
+        return prefix if prefix else globals.CONF_GUILDS.get('default')
+    except Exception:
+        default = globals.CONF_GUILDS.get('default')
+        return default if default else '!'
+
+
+bot = commands.Bot(command_prefix=determine_prefix)
 
 # TODO: custom help command
-# TODO: command to update prefix per guild (depends on persistent storage though)
 # TODO: keep reddit post date in Game object for daily update
 # TODO: add game release date?
 
@@ -15,6 +25,12 @@ bot = commands.Bot(command_prefix='=')
 @bot.event
 async def on_ready():
     log(f"{bot.user} has joined {len(bot.guilds)} guilds")
+    
+
+@bot.event
+async def on_guild_remove(guild):
+    globals.CONF_GENERAL.del_key(guild.id)
+    globals.CONF_GENERAL.save()
 
 
 if __name__ == '__main__':

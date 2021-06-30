@@ -80,13 +80,21 @@ class Config:
         return self._content.keys()
 
     @init_required
-    def set(self, key, value):
-        if key not in self._content:
+    def set(self, key, value, new=False):
+        if key not in self._content and not new:
             log("No such key in configuration...")
             return False
         self._content[key] = value
         self._changed = True
         return True
+
+    @init_required
+    def del_key(self, key):
+        if key in self._content:
+            del self._content[key]
+            self._changed = True
+            return True
+        return False
 
     def as_json(self, indent=4):
         return json.dumps(self._content, indent=indent)
