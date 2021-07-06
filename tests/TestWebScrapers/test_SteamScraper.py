@@ -1,3 +1,6 @@
+from WebScrapers.SteamScraper import Steam
+
+
 def test_get_store_url():
     assert False
 

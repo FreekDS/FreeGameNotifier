@@ -1,3 +1,6 @@
+from GameFetchers.GameFetchers import GameFetcher
+
+
 def test_allowed_source():
     assert False
 

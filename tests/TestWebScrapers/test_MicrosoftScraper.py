@@ -1,3 +1,6 @@
+from WebScrapers.MicrosoftScraper import MicrosoftStore
+
+
 def test_get_store_url():
     assert False
 

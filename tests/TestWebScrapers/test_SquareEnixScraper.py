@@ -1,3 +1,6 @@
+from WebScrapers.SquareEnixScraper import SquareEnix
+
+
 def test_get_store_url():
     assert False
 
