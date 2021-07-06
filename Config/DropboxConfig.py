@@ -5,7 +5,7 @@ import dropbox
 import dropbox.exceptions
 import dropbox.files
 
-from Helpers import log
+import Helpers
 
 
 def init_required(func):
@@ -14,7 +14,7 @@ def init_required(func):
         if args[0].initialized:
             return func(*args, **kwargs)
         else:
-            log("Config manager is not initialized, initialize first by calling read_file()!")
+            Helpers.log("Config manager is not initialized, initialize first by calling read_file()!")
 
     return wrapper
 
@@ -49,7 +49,7 @@ class Config:
             md, resp = Config.DBX.files_download(f'/{self.conf_path}')
             self._content = json.loads(resp.content)
             self.initialized = True
-            log(f"/{self.conf_path} loaded from DropBox!")
+            Helpers.log(f"/{self.conf_path} loaded from DropBox!")
         except dropbox.exceptions.ApiError as e:
             print(e)
         pass
@@ -66,11 +66,11 @@ class Config:
                 _ = Config.DBX.files_upload(content, f"/{self.conf_path}", dropbox.files.WriteMode.overwrite)
                 self._changed = False if not force else self._changed
                 if force:
-                    log(f"Saved configuration file forcefully!")
+                    Helpers.log(f"Saved configuration file forcefully!")
                 else:
-                    log("Saved configuration file!")
+                    Helpers.log("Saved configuration file!")
             except dropbox.exceptions.ApiError as e:
-                log(f"Error saving configuration file {e}")
+                Helpers.log(f"Error saving configuration file {e}")
 
     @init_required
     def get(self, key):
@@ -83,7 +83,7 @@ class Config:
     @init_required
     def set(self, key, value, new=False):
         if key not in self._content and not new:
-            log("No such key in configuration...")
+            Helpers.log("No such key in configuration...")
             return False
         self._content[key] = value
         self._changed = True
