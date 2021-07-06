@@ -23,7 +23,7 @@ def html_get(html, what):
         if s.get_title() is not None:
             method = getattr(s, what)
             if method is None:
-                raise AttributeError(f"Unknown attribute, no method '{what}'")
+                raise AttributeError(f"Unknown attribute, no method 'get_{what}'")
             result = method()
             if result is not None:
                 result = result.replace('\r', '')
