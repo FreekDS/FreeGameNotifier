@@ -2,7 +2,7 @@ import collections.abc
 import re
 from typing import List, Union
 
-import globals
+import Helpers
 
 
 class NestedDict(dict):
@@ -83,7 +83,7 @@ class NestedDict(dict):
             return False
         elif value.isnumeric():
             return int(value)
-        elif re.match('\d+\.\d+', value):
+        elif re.match(r'\d+\.\d+', value):
             return float(value)
         elif value.startswith('[') and value.endswith(']') and comprehend_list:
             value = value.replace('[', '').replace(']', '')
@@ -98,11 +98,4 @@ class NestedDict(dict):
                     value_result.append(parsed)
             return value_result
         else:
-            return NestedDict.insert_spaces(value)
-
-    @staticmethod
-    def insert_spaces(string):
-        pattern = globals.CONF_GENERAL.get('space_placeholder')
-        if not pattern:
-            pattern = ' '
-        return string.replace(pattern, ' ')
+            return Helpers.insert_spaces(value)

@@ -1,4 +1,3 @@
-from Config import DropboxConfig
 
 
 def test_get_content():
