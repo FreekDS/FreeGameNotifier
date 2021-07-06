@@ -7,7 +7,7 @@ from discord.ext.commands import Context as CmdCtx
 
 import globals
 from GameFetchers.GameFetchers import GameFetcher, RedditFetcher, CombinationFetcher, Game
-from Helpers import log
+from Loggers import log
 
 
 class FGNCog(commands.Cog):

@@ -5,7 +5,7 @@ from discord.ext import commands
 from discord.ext.commands import has_permissions
 
 import globals
-from Helpers import NestedDict
+from Utils import NestedDict
 
 
 class ConfManagerCog(commands.Cog):

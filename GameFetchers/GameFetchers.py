@@ -6,7 +6,7 @@ from typing import List
 import asyncpraw
 
 import globals
-from Helpers import log
+from Loggers import log
 from WebScrapers import *
 from .Game import Game
 

@@ -1,6 +1,6 @@
 import pytest
 
-from Helpers import NestedDict
+from Utils import NestedDict
 
 
 @pytest.fixture

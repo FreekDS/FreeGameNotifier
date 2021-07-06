@@ -1,9 +1,4 @@
-from datetime import datetime
 import globals
-
-
-def log(message):
-    print(f"[{datetime.now().strftime('%b %d %Y %H:%M:%S')}]: {message}")
 
 
 def insert_spaces(string):

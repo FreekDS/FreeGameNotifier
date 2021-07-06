@@ -2,7 +2,7 @@ import collections.abc
 import re
 from typing import List, Union
 
-import Helpers
+import Utils
 
 
 class NestedDict(dict):
@@ -98,4 +98,4 @@ class NestedDict(dict):
                     value_result.append(parsed)
             return value_result
         else:
-            return Helpers.insert_spaces(value)
+            return Utils.insert_spaces(value)
