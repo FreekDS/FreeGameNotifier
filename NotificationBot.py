@@ -19,7 +19,6 @@ def determine_prefix(_, message):
 
 bot = commands.Bot(command_prefix=determine_prefix)
 
-# TODO: create a safe test environment on Dropbox
 # TODO: keep reddit post date in Game object for daily update
 # TODO: add game release date?
 

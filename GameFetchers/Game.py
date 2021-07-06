@@ -4,7 +4,10 @@ import globals
 class Game:
     def __init__(self, title, store_url, game_url, fetch_date, image, store_icon, store, description,
                  author):
-        max_desc_size = globals.CONF_GENERAL.get('data').get('desc_size')
+        if globals.initialized:
+            max_desc_size = globals.CONF_GENERAL.get('data').get('desc_size')
+        else:
+            max_desc_size = 256
 
         description = description.replace('\n', '')
         if len(description) > max_desc_size:

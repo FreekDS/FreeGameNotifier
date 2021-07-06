@@ -3,6 +3,9 @@ from Config import Config
 CONF_GENERAL: Config
 CONF_GUILDS: Config
 
+initialized = False
+
+
 HELP: dict
 
 
@@ -15,6 +18,7 @@ def init(access_token, is_development):
     global CONF_GENERAL
     global CONF_GUILDS
     global HELP
+    global initialized
 
     version = '-dev' if is_development else ''
 
@@ -32,6 +36,8 @@ def init(access_token, is_development):
                 continue
             [key, value] = line.split('=')
             HELP[key.strip()] = value.strip()
+
+    initialized = True
 
 
 def save_all():
