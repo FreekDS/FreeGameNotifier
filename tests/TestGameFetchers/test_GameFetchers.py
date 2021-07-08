@@ -1,14 +1,27 @@
-from GameFetchers.GameFetchers import GameFetcher
+import pytest
+import globals
+import os
+from dotenv import load_dotenv
+from GameFetchers.GameFetchers import RedditFetcher
 
 
-def test_allowed_source():
-    assert False
+@pytest.fixture
+def rf():
+    if not globals.initialized:
+        load_dotenv()
+        globals.init(os.getenv('DROPBOX_ACCESS_TOKEN'), True)
+    rf = RedditFetcher("FreeGamesOnSteam")
+    yield rf
 
 
-def test_reddit_fetcher():
+@pytest.mark.asyncio
+async def test_reddit_fetcher(rf):
     """Test __repr__ function"""
-    assert False
+    assert rf.__repr__() == "RedditFetcher('FreeGamesOnSteam')"
 
 
-def test_subreddit():
-    assert False
+@pytest.mark.asyncio
+async def test_subreddit(rf):
+    subreddit = await rf.subreddit
+    assert subreddit is not None
+    assert subreddit.display_name == 'FreeGamesOnSteam'
