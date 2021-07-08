@@ -37,7 +37,9 @@ class NestedDict(dict):
         return True
 
     @staticmethod
-    def build_from_path(path: List[str], value: Union[str, int, bool, list, dict]) -> dict:
+    def build_from_path(path: List[str], value: Union[str, int, bool, list, dict, float]) -> dict:
+        if not path:
+            return dict()
         res = {path[-1]: value}
         for key in reversed(path[:-1]):
             res = {key: res}
@@ -59,31 +61,41 @@ class NestedDict(dict):
                 return False
         return isinstance(source, list) or isinstance(source, dict)
 
-    def delete_path(self, path, indexes: list or None = None):
+    def delete_path(self, path: List[str], indexes: list or None = None):
         """
         https://stackoverflow.com/questions/63820322/delete-key-at-arbitrary-depth-in-nested-dictionary
         """
         source = self
+        if not path:
+            return
         for key in path[:-1]:
+            if key not in source.keys():
+                return
             source = source[key]
+        if path[-1] not in source.keys():
+            return
         if isinstance(source[path[-1]], list):
             if indexes is not None:
                 source[path[-1]] = [item for index, item in enumerate(source[path[-1]]) if index not in indexes]
             else:
-                source[path[-1]] = list()
+                del source[path[-1]]
         else:
             del source[path[-1]]
 
     @staticmethod
     def parse_value(value: str, comprehend_list=True, forced_list_type=None):
         value = value.strip()
+        first_char = value[0]
+        other_chars = value[1:]
         if value in ['true', 'True']:
             return True
         elif value in ['false', 'False']:
             return False
         elif value.isnumeric():
             return int(value)
-        elif re.match(r'\d+\.\d+', value):
+        elif first_char == '-' and other_chars.isnumeric():
+            return -int(other_chars)
+        elif re.match(r'-?\d+\.\d+', value):
             return float(value)
         elif value.startswith('[') and value.endswith(']') and comprehend_list:
             value = value.replace('[', '').replace(']', '')
