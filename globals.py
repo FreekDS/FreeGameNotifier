@@ -1,3 +1,5 @@
+import os
+
 from Config import Config
 
 CONF_GENERAL: Config
@@ -5,6 +7,7 @@ CONF_GUILDS: Config
 
 initialized = False
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 HELP: dict
 
@@ -28,7 +31,7 @@ def init(access_token, is_development):
     CONF_GUILDS = Config(conf_path=f'guilds{version}.json')
     CONF_GUILDS.read_file()
 
-    with open('texts/help.txt', encoding='utf-8') as h_file:
+    with open(f'{ROOT_DIR}/texts/help.txt', encoding='utf-8') as h_file:
         HELP = dict()
         lines = h_file.readlines()
         for line in lines:
